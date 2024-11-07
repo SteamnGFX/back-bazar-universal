@@ -7,7 +7,10 @@ from bson.objectid import ObjectId
 
 app = Flask(__name__)
 CORS(app)
-client = MongoClient("mongodb+srv://admin:admin@muebles-troncoso.kqxfz.mongodb.net/?retryWrites=true&w=majority&appName=muebles-troncoso")
+
+# Cargar URI de MongoDB desde una variable de entorno
+mongo_uri = os.getenv("MONGO_URI", "mongodb+srv://admin:admin@muebles-troncoso.kqxfz.mongodb.net/?retryWrites=true&w=majority&appName=muebles-troncoso")
+client = MongoClient(mongo_uri)
 db = client['bazar']
 
 # Obtener la ruta absoluta de products.json en relación al archivo app.py
@@ -62,4 +65,6 @@ def get_sales():
     return jsonify(sales)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Usar el puerto proporcionado por Render si existe
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
